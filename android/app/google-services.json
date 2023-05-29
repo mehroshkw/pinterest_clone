@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "754657545818",
+    "project_id": "pinterestclone-3c1cc",
+    "storage_bucket": "pinterestclone-3c1cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754657545818:android:27b70d48a04b9698a85263",
+        "android_client_info": {
+          "package_name": "com.example.pinterest_clone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "754657545818-stguuc3mgp5j3pgs5jpq7uagg6jkteom.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pinterest_clone",
+            "certificate_hash": "2d0a99e608a23dd68f3bdff42599304b849ae918"
+          }
+        },
+        {
+          "client_id": "754657545818-5s5fqgt4lea50naitgt54t212qvjekjm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALGZJO7uwhIykx8iG0UQ2pXWK2_9Ljiso"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "754657545818-5s5fqgt4lea50naitgt54t212qvjekjm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "754657545818-kltfdodtrs7qu9tdsb9urj9kotiu28fs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.pinterestClone"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
