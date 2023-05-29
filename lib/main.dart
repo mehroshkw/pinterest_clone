@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinterest_clone/network_provider/photos_model.dart';
+import 'package:pinterest_clone/ui_screens/auth/sign_up/signup_bloc.dart';
+import 'package:pinterest_clone/ui_screens/auth/sign_up/singup_screen.dart';
 import 'package:pinterest_clone/ui_screens/category/category_bloc.dart';
 import 'package:pinterest_clone/ui_screens/category/category_screen.dart';
 import 'package:pinterest_clone/ui_screens/category/category_state.dart';
@@ -101,6 +103,13 @@ class _AppRouter {
           return MaterialPageRoute(
               builder: (_) =>
                   BlocProvider(create: (_) => CategoryBloc(), child: screen));
+        }
+      case SignupScreen.route:
+        {
+          const screen = SignupScreen();
+          return MaterialPageRoute(
+              builder: (_) =>
+                  BlocProvider(create: (_) => SignupBloc(), child: screen));
         }
     }
     return null;

@@ -57,6 +57,7 @@ class AppTextField extends StatelessWidget {
               style: const TextStyle(
                   color: AppColours.colorOnSurface, fontFamily: AppFonts.NHaasGroteskRegular, fontSize: 14),
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                   border: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   prefixIcon: prefixIcon,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pinterest_clone/ui_screens/auth/sign_up/singup_screen.dart';
 import 'package:pinterest_clone/utils/app_colours.dart';
 import 'package:pinterest_clone/utils/app_strings.dart';
 import 'package:pinterest_clone/extensions/context_extension.dart';
@@ -61,7 +62,9 @@ class OnBoardingScreen extends StatelessWidget {
               width: size.width / 1.2,
               child: AppButton(
                 text: AppText.SIGN_UP,
-                onClick: () {},
+                onClick: () {
+                  Navigator.pushNamed(context, SignupScreen.route);
+                },
                 color: AppColours.colorPrimary,
                 textColor: AppColours.colorOnPrimary,
                 fontFamily: AppColours.helveticaBold,
