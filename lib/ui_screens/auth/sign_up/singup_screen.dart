@@ -4,10 +4,47 @@ import 'package:pinterest_clone/ui_screens/auth/sign_up/signup_bloc.dart';
 import 'package:pinterest_clone/ui_screens/reusable_widgets/app_text_field.dart';
 import 'package:pinterest_clone/utils/app_colours.dart';
 
+import '../../../data_handler/snackbar_message.dart';
+import '../../../helpers/dilogue_helper.dart';
+import '../../../helpers/material_dialogue_content.dart';
+import '../../../helpers/snackbar_helper.dart';
+import '../../../utils/app_strings.dart';
+import '../login/login_screen.dart';
+
 class SignupScreen extends StatelessWidget {
   static const String route = '/signup_screen';
 
   const SignupScreen({Key? key}) : super(key: key);
+
+  Future<void> _signup(SignupBloc bloc, BuildContext context,
+      MaterialDialogHelper dialogHelper) async {
+    dialogHelper
+      ..injectContext(context)
+      ..showProgressDialog(AppText.CREATING_ACCOUNT);
+    try {
+      final response = await bloc.createAccount;
+      dialogHelper.dismissProgress();
+      final snackbarHelper = SnackbarHelper.instance..injectContext(context);
+
+      if (response== false) {
+        snackbarHelper.showSnackbar(
+            snackbar: SnackbarMessage.error(message: "Error Signing Up"));
+        return;
+      }
+      snackbarHelper.showSnackbar(
+          snackbar: SnackbarMessage.success(
+              message: AppText.SINGUP_SUCCESS));
+      Future.delayed(const Duration(seconds: 1)).then((_) =>
+          Navigator.pushNamedAndRemoveUntil(
+              context, LoginScreen.route, (route) => false));
+    } catch (_) {
+      dialogHelper.dismissProgress();
+      dialogHelper.showMaterialDialogWithContent(
+          MaterialDialogContent.networkError(),
+              () => _signup(bloc, context, dialogHelper));
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

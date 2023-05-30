@@ -91,6 +91,8 @@ abstract class AppText {
   static const String YES = 'Yes';
   static const String LOG_oUT = 'Logout';
   static const String NO = 'No';
+  static const String CREATING_ACCOUNT = 'Signing up...';
+  static const String SINGUP_SUCCESS = 'Signed up successfully';
   static const String USER_LIST = 'User List';
   static const String DUMMY_TEXT =
       'Lorem Ipsum is simply dummy text of the printing and typesetting.';
