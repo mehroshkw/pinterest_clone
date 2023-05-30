@@ -15,6 +15,29 @@ class SignupBloc extends Cubit<SignupState> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+
+  void togglePassword() =>
+      emit(state.copyWith(isNotShowPassword: !state.isNotShowPassword));
+
+  void toggleConfirmPassword() => emit(state.copyWith(
+      isNotShowConfirmPassword: !state.isNotShowConfirmPassword));
+
+  void updateNameError(bool value, String errorText) =>
+      emit(state.copyWith(nameError: value, errorText: errorText));
+
+  void updateAgeError(bool value, String errorText) =>
+      emit(state.copyWith(ageError: value, errorText: errorText));
+
+  void updateEmailError(bool value, String errorText) =>
+      emit(state.copyWith(emailError: value, errorText: errorText));
+
+  void updatePasswordError(bool value, String errorText) =>
+      emit(state.copyWith(passwordError: value, errorText: errorText));
+
+  void updateCountryError(bool value, String errorText) =>
+      emit(state.copyWith(countryError: value, errorText: errorText));
+
+
   Future<bool> createAccount(String name, String email, String password, int age, String country) async {
     final user = await _auth.createUserWithEmailAndPassword(
         email: emailController.text, password: passwordController.text);
