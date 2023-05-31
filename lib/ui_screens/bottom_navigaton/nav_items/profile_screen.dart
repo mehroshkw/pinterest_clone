@@ -40,7 +40,7 @@ class ProfileScreen extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(
+                  return const Center(
                     child: Text('Error Loading Saved Images'),
                   );
                 } else if (snapshot.hasData) {
@@ -82,13 +82,13 @@ class ProfileScreen extends StatelessWidget {
 
     Widget buildCreatedStreamBuilder() {
       return BlocBuilder<BottomNavBloc, BottomNavState>(
-        builder: (_, state) => Container(
+        builder: (_, state) => SizedBox(
             height: size.height / 2,
             width: size.width,
             child: StreamBuilder<QuerySnapshot>(
               stream: firestore
-                  .collection('savedimages')
-                  .where('userEmail',
+                  .collection('created_pin')
+                  .where('email',
                       isEqualTo: bloc
                           .userEmail) // Replace 'userEmail' with the actual user's email
                   .snapshots(),
@@ -97,7 +97,7 @@ class ProfileScreen extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(
+                  return const Center(
                     child: Text('Error Loading Saved Images'),
                   );
                 } else if (snapshot.hasData) {
@@ -107,7 +107,7 @@ class ProfileScreen extends StatelessWidget {
                     gridDelegate:
                         const SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 200,
-                      childAspectRatio: 1.21 / 2,
+                      childAspectRatio: 1.21 / 3,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 5,
                     ),
@@ -141,12 +141,37 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: Icon(Icons.poll_outlined,  color: AppColours.colorBackground,),
+        leading: const Icon(
+          Icons.poll_outlined,
+          color: AppColours.colorBackground,
+        ),
         actions: [
-          Icon(Icons.share, color: AppColours.colorBackground,),
-          SizedBox(width: 10,),
-          Icon(Icons.more_horiz,  color: AppColours.colorBackground,),
-          SizedBox(width: 10,),
+          const Icon(
+            Icons.share,
+            color: AppColours.colorBackground,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          const Icon(
+            Icons.more_horiz,
+            color: AppColours.colorBackground,
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          GestureDetector(
+            onTap: (){
+              bloc.logoutUser();
+            },
+            child: const Icon(
+              Icons.logout,
+              color: AppColours.colorBackground,
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
         ],
       ),
       body: BlocBuilder<BottomNavBloc, BottomNavState>(
@@ -154,64 +179,77 @@ class ProfileScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-          FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        future: bloc.getUserData(),
-    builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator();
-      } else if (snapshot.hasData) {
-        final userData = snapshot.data!.data();
-        final userName = userData?['name'] as String?;
-        final imgUrl = userData?['imgUrl'] as String?;
-        // Render the user data
-        return Column(
-          children: [
-            Stack(
-              children: [
-                SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColours.colorPrimary,
-                              width: 1,
-                            )),
-                        child: CachedNetworkImage(
-                          imageUrl: imgUrl!,
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
+            FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                future: bloc.getUserData(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                        snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasData) {
+                    final userData = snapshot.data!.data();
+                    final userName = userData?['name'] as String?;
+                    final imgUrl = userData?['imgUrl'] as String?;
+                    // Render the user data
+                    return Column(
+                      children: [
+                        Stack(
+                          children: [
+                            SizedBox(
+                              width: 120,
+                              height: 120,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: AppColours.colorPrimary,
+                                        width: 1,
+                                      )),
+                                  child: CachedNetworkImage(
+                                    imageUrl: imgUrl!,
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    placeholder: (context, url) => const Center(
+                                        child: CircularProgressIndicator()),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                          placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) => Icon(Icons.error),
-                        ),),
-                  ),
-                ),
-              ],
-            ),
-             SizedBox(height: 10,),
-             Text(
-              userName!,
-              style: TextStyle(color: AppColours.onScaffoldColor, fontSize: 18, fontFamily: AppFonts.helveticaBold),
-            ),
-          ],
-        );
-      }
-      return Center(
-        child:Text('Data not Found'),
-      );
-    }),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          userName!,
+                          style: const TextStyle(
+                              color: AppColours.onScaffoldColor,
+                              fontSize: 18,
+                              fontFamily: AppFonts.helveticaBold),
+                        ),
+                      ],
+                    );
+                  }
+                  return const Center(
+                    child: Text('Data not Found'),
+                  );
+                }),
             const SizedBox(height: 10),
 
-            SizedBox(height: 50,),
+            const SizedBox(
+              height: 50,
+            ),
             // Add buttons for selecting saved or created
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +266,7 @@ class ProfileScreen extends StatelessWidget {
                     text: 'Saved',
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 SizedBox(
                   height: 40,
                   width: 100,
@@ -243,7 +281,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Render the corresponding StreamBuilder based on selection
             Expanded(
               child: state.isSavedSelected

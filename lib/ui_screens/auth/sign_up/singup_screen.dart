@@ -215,7 +215,7 @@ class SignupScreen extends StatelessWidget {
                 child: AppButton(
                     textColor: AppColours.colorOnPrimary,
                     color: AppColours.colorPrimary,
-                    text: 'Sign Up',
+                    text: 'Upload',
                     onClick: () {
                       context.unfocus();
                       final password = bloc.passwordController.text;
