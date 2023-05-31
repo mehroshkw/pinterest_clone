@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,8 +8,11 @@ import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/files.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../data_handler/snackbar_message.dart';
+import '../../helpers/snackbar_helper.dart';
 import 'image_view_state.dart';
 import 'package:http/http.dart' as http;
 
@@ -69,5 +73,23 @@ class ImageViewBloc extends Cubit<ImageViewState> {
   }
   void toggleFavourite() {
     emit(state.copyWith(isFavourite:  !state.isFavourite));
+  }
+
+  Future<void> saveImagetoFS(String userEmail, String imageUrl, BuildContext context) async {
+    final firestore = FirebaseFirestore.instance;
+    try {
+      await firestore.collection('savedimages').add({
+        'userEmail': userEmail,
+        'imageUrl': imageUrl,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      final snackbarHelper = SnackbarHelper.instance..injectContext(context);
+      snackbarHelper.showSnackbar(
+          snackbar: SnackbarMessage.success(message: "Image Saved Successfully"));
+    } catch (error) {
+      final snackbarHelper = SnackbarHelper.instance..injectContext(context);
+      snackbarHelper.showSnackbar(
+          snackbar: SnackbarMessage.error(message: "Error Saving Image"));
+    }
   }
 }

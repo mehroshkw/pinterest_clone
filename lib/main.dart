@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinterest_clone/network_provider/photos_model.dart';
+import 'package:pinterest_clone/ui_screens/auth/login/login_bloc.dart';
 import 'package:pinterest_clone/ui_screens/auth/login/login_screen.dart';
 import 'package:pinterest_clone/ui_screens/auth/sign_up/signup_bloc.dart';
 import 'package:pinterest_clone/ui_screens/auth/sign_up/singup_screen.dart';
@@ -12,6 +13,7 @@ import 'package:pinterest_clone/ui_screens/category/category_screen.dart';
 import 'package:pinterest_clone/ui_screens/category/category_state.dart';
 import 'package:pinterest_clone/ui_screens/image_view/image_view_bloc.dart';
 import 'package:pinterest_clone/ui_screens/image_view/image_view_screen.dart';
+import 'package:pinterest_clone/ui_screens/image_view/myImages.dart';
 import 'package:pinterest_clone/ui_screens/img_full_screen_view/img_full_screen_view.dart';
 import 'package:pinterest_clone/ui_screens/img_full_screen_view/img_full_view_bloc.dart';
 import 'package:pinterest_clone/utils/app_colours.dart';
@@ -115,7 +117,16 @@ class _AppRouter {
         case LoginScreen.route:
         {
           const screen = LoginScreen();
-          return _getPageRoute(screen);
+          return MaterialPageRoute(
+              builder: (_) =>
+                  BlocProvider(create: (_) => LoginBloc(), child: screen));
+        }  case MyImageViewScreen.route:
+        {
+          final  photo = settings.arguments as String;
+          final screen = MyImageViewScreen(photo: photo,);
+          return MaterialPageRoute(
+              builder: (_) =>
+                  BlocProvider(create: (_) => ImageViewBloc(), child: screen));
         }
     }
     return null;

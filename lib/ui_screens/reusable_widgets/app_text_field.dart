@@ -55,7 +55,7 @@ class AppTextField extends StatelessWidget {
               keyboardType: textInputType,
               textInputAction: textInputAction,
               style: const TextStyle(
-                  color: AppColours.colorOnSurface, fontFamily: AppFonts.NHaasGroteskRegular, fontSize: 14),
+                  color: AppColours.onScaffoldColor, fontFamily: AppFonts.NHaasGroteskRegular, fontSize: 14),
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                   border: InputBorder.none,

@@ -5,7 +5,6 @@ import 'package:pinterest_clone/ui_screens/auth/sign_up/signup_bloc.dart';
 import 'package:pinterest_clone/ui_screens/auth/sign_up/signup_state.dart';
 import 'package:pinterest_clone/ui_screens/reusable_widgets/app_text_field.dart';
 import 'package:pinterest_clone/utils/app_colours.dart';
-
 import '../../../data_handler/snackbar_message.dart';
 import '../../../helpers/dilogue_helper.dart';
 import '../../../helpers/material_dialogue_content.dart';
@@ -25,18 +24,22 @@ class SignupScreen extends StatelessWidget {
       ..injectContext(context)
       ..showProgressDialog(AppText.CREATING_ACCOUNT);
     try {
-      final response = await bloc.createAccount;
+      final response = await bloc.createAccount(
+          bloc.nameController.text,
+          bloc.emailController.text,
+          bloc.passwordController.text,
+          bloc.ageController.text,
+          bloc.countryController.text);
       dialogHelper.dismissProgress();
       final snackbarHelper = SnackbarHelper.instance..injectContext(context);
 
-      if (response== false) {
+      if (response == false) {
         snackbarHelper.showSnackbar(
             snackbar: SnackbarMessage.error(message: "Error Signing Up"));
         return;
       }
       snackbarHelper.showSnackbar(
-          snackbar: SnackbarMessage.success(
-              message: AppText.SINGUP_SUCCESS));
+          snackbar: SnackbarMessage.success(message: AppText.SINGUP_SUCCESS));
       Future.delayed(const Duration(seconds: 1)).then((_) =>
           Navigator.pushNamedAndRemoveUntil(
               context, LoginScreen.route, (route) => false));
@@ -44,10 +47,9 @@ class SignupScreen extends StatelessWidget {
       dialogHelper.dismissProgress();
       dialogHelper.showMaterialDialogWithContent(
           MaterialDialogContent.networkError(),
-              () => _signup(bloc, context, dialogHelper));
+          () => _signup(bloc, context, dialogHelper));
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -59,69 +61,129 @@ class SignupScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children:  [
-            const SizedBox(height: kToolbarHeight-20),
-            const Text("What's your name?", style: TextStyle(
-              fontFamily: AppFonts.helveticaBold,
-              color: AppColours.colorTextLight,
-              fontSize: 16
-            )),
-             AppTextField(
-                controller: bloc.nameController,
-                hint: "Name", textInputType: TextInputType.text, isError: false),
-            const SizedBox(height: 10),
-            const Text("What's your Email Address?", style: TextStyle(
-                fontFamily: AppFonts.helveticaBold,
-                color: AppColours.colorTextLight,
-                fontSize: 16
-            )),
-             AppTextField(
-                 controller: bloc.emailController,
-                 hint: "Email", textInputType: TextInputType.emailAddress, isError: false),
-            const SizedBox(height: 10),
-            const Text("Set your Password", style: TextStyle(
-                fontFamily: AppFonts.helveticaBold,
-                color: AppColours.colorTextLight,
-                fontSize: 16
-            )),
-             AppTextField(
-                 controller: bloc.passwordController,
-                 hint: "Password", textInputType: TextInputType.visiblePassword, isError: false),
-            const SizedBox(height: 10),
-            const Text("What's your age?", style: TextStyle(
-                fontFamily: AppFonts.helveticaBold,
-                color: AppColours.colorTextLight,
-                fontSize: 16
-            )),
-             AppTextField(
-                controller: bloc.ageController,
-                hint: "Age", textInputType: TextInputType.number, isError: false),
-            const SizedBox(height: 10),
-            const Text("Where are you from?", style: TextStyle(
-                fontFamily: AppFonts.helveticaBold,
-                color: AppColours.colorTextLight,
-                fontSize: 16
-            )),
+          children: [
+            const SizedBox(height: kToolbarHeight - 20),
+            const Center(
+              child: Image(image: AssetImage("assets/pinterest-logo.png"),height: 80,
+              width: 80,),
+            ),
+            const Text("What's your name?",
+                style: TextStyle(
+                    fontFamily: AppFonts.helveticaBold,
+                    color: AppColours.colorTextLight,
+                    fontSize: 16)),
             BlocBuilder<SignupBloc, SignupState>(
               buildWhen: (previous, current) =>
-              previous.nameError != current.nameError,
+                  previous.nameError != current.nameError,
               builder: (_, state) => AppTextField(
-                   controller: bloc.countryController,
-                   hint: "Country", textInputType: TextInputType.text,
-                 onChanged: (String? value) {
-                 if (value == null) return;
-                 if (value.isNotEmpty && state.nameError) {
-                   bloc.updateNameError(false, '');
-                   return;
-                 }
-               },
-                 isError: state.nameError,),
-             ),
-
-            const SizedBox(height: 20,),
+                controller: bloc.nameController,
+                hint: "Name",
+                textInputType: TextInputType.text,
+                onChanged: (String? value) {
+                  if (value == null) return;
+                  if (value.isNotEmpty && state.nameError) {
+                    bloc.updateNameError(false, '');
+                    return;
+                  }
+                },
+                isError: state.nameError,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text("What's your Email Address?",
+                style: TextStyle(
+                    fontFamily: AppFonts.helveticaBold,
+                    color: AppColours.colorTextLight,
+                    fontSize: 16)),
+            BlocBuilder<SignupBloc, SignupState>(
+              buildWhen: (previous, current) =>
+                  previous.emailError != current.emailError,
+              builder: (_, state) => AppTextField(
+                controller: bloc.emailController,
+                hint: "Email",
+                textInputType: TextInputType.text,
+                onChanged: (String? value) {
+                  if (value == null) return;
+                  if (value.isNotEmpty && state.emailError) {
+                    bloc.updateEmailError(false, '');
+                    return;
+                  }
+                },
+                isError: state.emailError,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text("Set your Password",
+                style: TextStyle(
+                    fontFamily: AppFonts.helveticaBold,
+                    color: AppColours.colorTextLight,
+                    fontSize: 16)),
+            BlocBuilder<SignupBloc, SignupState>(
+              buildWhen: (previous, current) =>
+                  previous.passwordError != current.passwordError,
+              builder: (_, state) => AppTextField(
+                  controller: bloc.passwordController,
+                  hint: "Password",
+                  textInputType: TextInputType.visiblePassword,
+                  onChanged: (String? value) {
+                    if (value == null) return;
+                    if (value.isNotEmpty && state.passwordError) {
+                      bloc.updatePasswordError(false, '');
+                      return;
+                    }
+                  },
+                  isError: state.passwordError),
+            ),
+            const SizedBox(height: 10),
+            const Text("What's your age?",
+                style: TextStyle(
+                    fontFamily: AppFonts.helveticaBold,
+                    color: AppColours.colorTextLight,
+                    fontSize: 16)),
+            BlocBuilder<SignupBloc, SignupState>(
+              buildWhen: (previous, current) =>
+                  previous.ageError != current.ageError,
+              builder: (_, state) => AppTextField(
+                  controller: bloc.ageController,
+                  hint: "Age",
+                  textInputType: TextInputType.number,
+                  onChanged: (String? value) {
+                    if (value == null) return;
+                    if (value.isNotEmpty && state.ageError) {
+                      bloc.updateAgeError(false, '');
+                      return;
+                    }
+                  },
+                  isError: state.ageError),
+            ),
+            const SizedBox(height: 10),
+            const Text("Where are you from?",
+                style: TextStyle(
+                    fontFamily: AppFonts.helveticaBold,
+                    color: AppColours.colorTextLight,
+                    fontSize: 16)),
+            BlocBuilder<SignupBloc, SignupState>(
+              buildWhen: (previous, current) =>
+                  previous.countryError != current.countryError,
+              builder: (_, state) => AppTextField(
+                  controller: bloc.countryController,
+                  hint: "Country",
+                  textInputType: TextInputType.text,
+                  onChanged: (String? value) {
+                    if (value == null) return;
+                    if (value.isNotEmpty && state.countryError) {
+                      bloc.updateCountryError(false, '');
+                      return;
+                    }
+                  },
+                  isError: state.countryError),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             BlocBuilder<SignupBloc, SignupState>(
                 buildWhen: (previous, current) =>
-                previous.errorText != current.errorText,
+                    previous.errorText != current.errorText,
                 builder: (_, state) {
                   if (state.errorText.isEmpty) return const SizedBox();
                   return Container(
@@ -144,52 +206,50 @@ class SignupScreen extends StatelessWidget {
                                     fontSize: 12))
                           ]));
                 }),
-            const SizedBox(height: 20,),
-
+            const SizedBox(
+              height: 20,
+            ),
             SizedBox(
                 height: 40,
                 width: 400,
                 child: AppButton(
-                  textColor: AppColours.colorOnPrimary,
+                    textColor: AppColours.colorOnPrimary,
                     color: AppColours.colorPrimary,
-                    text: 'Sign Up', onClick: (){
-                  context.unfocus();
-                  // final password = bloc.passwordController.text;
-                  // final confirmPassword =
-                  //     bloc.confirmPasswordController.text;
-                  // if (bloc.nameController.text.isEmpty) {
-                  //   bloc.updateNameError(true, AppText.NAME_EMPTY);
-                  //   return;
-                  // }
-                  // if (bloc.dobController.text.isEmpty) {
-                  //   bloc.updateDOBError(true, AppText.DOB_EMPTY);
-                  //   return;
-                  // }
-                  // final email = bloc.emailController.text;
-                  // if (email.isEmpty) {
-                  //   bloc.updateEmailError(
-                  //       true, AppText.EMAIL_FIELD_CANNOT_BE_EMPTY);
-                  //   return;
-                  // }
-                  //
-                  // if (bloc.passwordController.text.isEmpty) {
-                  //   bloc.updatePasswordError(
-                  //       true, AppText.PASSWORD_FIELD_CANNOT_BE_EMPTY);
-                  //   return;
-                  // }
-                  //
-                  // if (bloc.confirmPasswordController.text.isEmpty) {
-                  //   bloc.updateConfirmPasswordError(true,
-                  //       AppText.CONFIRM_PASSWORD_FIELD_CANNOT_BE_EMPTY);
-                  //   return;
-                  // }
-                  // if (password != confirmPassword) {
-                  //   bloc.updateConfirmPasswordError(true,
-                  //       AppText.PASSWORD_AND_CONFIRM_PASSWORD_NOT_MATCH);
-                  //   return;
-                  // }
-                  _signup(bloc, context, MaterialDialogHelper.instance());
-                })),
+                    text: 'Sign Up',
+                    onClick: () {
+                      context.unfocus();
+                      final password = bloc.passwordController.text;
+                      final email = bloc.emailController.text;
+                      if (bloc.nameController.text.isEmpty) {
+                        bloc.updateNameError(true, "Name Empty");
+                        return;
+                      }
+                      if (bloc.emailController.text.isEmpty) {
+                        bloc.updateEmailError(true, "Email is empty");
+                        return;
+                      }
+                      if (bloc.passwordController.text.isEmpty) {
+                        bloc.updatePasswordError(true, "Password is Empty");
+                        return;
+                      }
+
+                      if (bloc.ageController.text.isEmpty) {
+                        bloc.updateAgeError(true, "Age is Empty");
+                        return;
+                      }
+
+                      if (bloc.countryController.text.isEmpty) {
+                        bloc.updateCountryError(true, "Contry is Empty");
+                        return;
+                      }
+                      // bloc.createAccount(
+                      //     bloc.nameController.text,
+                      //     bloc.emailController.text,
+                      //     bloc.passwordController.text,
+                      //     bloc.ageController.text,
+                      //     bloc.countryController.text);
+                      _signup(bloc, context, MaterialDialogHelper.instance());
+                    })),
           ],
         ),
       ),

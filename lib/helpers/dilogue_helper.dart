@@ -86,18 +86,18 @@ class MaterialDialogHelper {
                                     style: const TextStyle(
                                         fontFamily: AppFonts.helveticaBold,
                                         fontSize: 22,
-                                        color: AppColours.colorOnSurface))),
+                                        color: AppColours.colorOnSecondary))),
                             const SizedBox(height: 10),
                             Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 child: Text(content.message,
                                     style: TextStyle(
-                                        color: AppColours.colorOnSurface
+                                        color: AppColours.colorOnSecondary
                                             .withOpacity(0.7),
                                         fontSize: 14,
                                         fontFamily:
-                                        AppFonts.helveticaBold))),
+                                        AppFonts.helveticaLight))),
                             const SizedBox(height: 20),
                             IntrinsicHeight(
                                 child: Row(

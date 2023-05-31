@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:path/src/context.dart';
 import 'package:pinterest_clone/extensions/context_extension.dart';
 import 'package:pinterest_clone/network_provider/photos_model.dart';
 import 'package:pinterest_clone/ui_screens/image_view/image_view_bloc.dart';
@@ -12,11 +11,11 @@ import 'package:pinterest_clone/utils/app_colours.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-class ImageViewScreen extends StatelessWidget {
-  static const String route = '/image_view';
-  final Photo photo;
+class MyImageViewScreen extends StatelessWidget {
+  static const String route = '/my_image_view';
+  final String photo;
 
-  const ImageViewScreen({super.key, required this.photo});
+  const MyImageViewScreen({super.key, required this.photo});
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +32,12 @@ class ImageViewScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height/1.3,
                   width: MediaQuery.of(context).size.width,
                   child: CachedNetworkImage(
-                          imageUrl: photo.src!.portrait!,
-                          placeholder: (context, url) => Container(
-                            color: const Color(0xfff5f8fd),
-                          ),
-                          fit: BoxFit.cover,
-                        ),
+                    imageUrl: photo,
+                    placeholder: (context, url) => Container(
+                      color: const Color(0xfff5f8fd),
+                    ),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               Container(
@@ -76,53 +75,21 @@ class ImageViewScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    children:  [
-                      CircleAvatar(
-                        backgroundColor: AppColours.colorTextLight.withOpacity(0.4),
-                      child:CachedNetworkImage(
-                        imageUrl: photo.url!,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                          ),
-                        ),
-                        placeholder: (context, url) => const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: CircularProgressIndicator(),
-                        ),
-                        errorWidget: (context, url, error) => const Icon(Icons.error_outline, color: AppColours.colorError, ),
-                      ),
-                      ),
-                      Padding(padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        photo.photographer! ?? "photographer name",
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      )
-                    ],
-                  ),
                   const SizedBox(height: 20,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                       Expanded(child: BlocBuilder<ImageViewBloc, ImageViewState>(builder: (_, state) =>
-                        IconButton(
-                            onPressed: (){
-                              bloc.toggleFavourite();
-                            },
-                            icon: Icon(state.isFavourite? Icons.favorite : Icons.favorite_border, color: state.isFavourite ? AppColours.colorPrimary : AppColours.onScaffoldColor,)),
+                      Expanded(child: BlocBuilder<ImageViewBloc, ImageViewState>(builder: (_, state) =>
+                          IconButton(
+                              onPressed: (){
+                                bloc.toggleFavourite();
+                              },
+                              icon: Icon(state.isFavourite? Icons.favorite : Icons.favorite_border, color: state.isFavourite ? AppColours.colorPrimary : AppColours.onScaffoldColor,)),
                       )),
                       InkWell(
                           onTap: () {
-                            Navigator.pushNamed(context, ImageFullViewScreen.route, arguments:photo.src!.portrait! );
+                            Navigator.pushNamed(context, ImageFullViewScreen.route, arguments:photo );
                             //Navigator.pop(context);
                           },
                           child: Container(
@@ -144,37 +111,29 @@ class ImageViewScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 8.0),
                         child: InkWell(
                             onTap: () {
-                              bloc.saveImg(photo.src!.portrait!);
+                              // bloc.saveImg(photo.src!.portrait!);
                               //Navigator.pop(context);
                             },
-                            child: GestureDetector(
-                              onTap: () async {
-                                final filePath = photo.src!.portrait!;
-                                SharedPreferences preferences = await SharedPreferences.getInstance();
-                                String? email = preferences.getString("email");
-                                bloc.saveImagetoFS(email!, filePath, context);
-                              },
-                              child: Container(
-                                  width: MediaQuery.of(context).size.width / 5,
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    border:
-                                    Border.all(color: Colors.white24, width: 1),
-                                    borderRadius: BorderRadius.circular(40),
-                                    color: AppColours.colorPrimary,
-                                  ),
-                                  child: const Text(
-                                    "Save",
-                                    style: TextStyle(
-                                        color: AppColours.scaffoldColor,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
-                                  )),
-                            )),
+                            child: Container(
+                                width: MediaQuery.of(context).size.width / 5,
+                                height: 50,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  border:
+                                  Border.all(color: Colors.white24, width: 1),
+                                  borderRadius: BorderRadius.circular(40),
+                                  color: AppColours.colorPrimary,
+                                ),
+                                child: const Text(
+                                  "Save",
+                                  style: TextStyle(
+                                      color: AppColours.scaffoldColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500),
+                                ))),
                       ),
                       Expanded(child: IconButton(onPressed: () async {
-                        final filePath = photo.src!.portrait!;
+                        final filePath = photo;
                         print('Sharing file: $filePath');
                         bloc.shareImageFromUrl(filePath);
                       }, icon: const Icon(Icons.share)))
@@ -211,11 +170,11 @@ class ImageViewScreen extends StatelessWidget {
                 title: const Padding(
                   padding: EdgeInsets.only(top: 8.0),
                   child: Text('Options',
-                  style: TextStyle(
-                    fontFamily: AppColours.helveticaRegular,
-                    fontSize: 16,
-                    color: Colors.black
-                  ),
+                    style: TextStyle(
+                        fontFamily: AppColours.helveticaRegular,
+                        fontSize: 16,
+                        color: Colors.black
+                    ),
                   ),
                 ),
                 enabled: false,
@@ -224,10 +183,10 @@ class ImageViewScreen extends StatelessWidget {
               ),
               ListTile(
                 title: const Text('Copy link',
-                style: TextStyle(
-                  fontFamily: AppColours.NHaasGroteskMedium,
-                  fontSize: 18
-                ),
+                  style: TextStyle(
+                      fontFamily: AppColours.NHaasGroteskMedium,
+                      fontSize: 18
+                  ),
                 ),
                 onTap: () => {},
               ),
@@ -239,7 +198,7 @@ class ImageViewScreen extends StatelessWidget {
                   ),
                 ),
                 onTap: () => {
-                ImageViewBloc().saveImg(photo.src!.portrait!)
+                  ImageViewBloc().saveImg(photo)
                 },
               ),
               ListTile(
@@ -250,7 +209,7 @@ class ImageViewScreen extends StatelessWidget {
                   ),
                 ),
                 onTap: () => {
-                  ImageViewBloc().setWallpaperFromFile(photo.src!.portrait!),
+                  ImageViewBloc().setWallpaperFromFile(photo),
                   Fluttertoast.showToast(
                       msg: "Wallpaper Applied to Home Screen",
                       toastLength: Toast.LENGTH_SHORT,

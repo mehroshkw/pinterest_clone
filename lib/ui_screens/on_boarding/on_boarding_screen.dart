@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:pinterest_clone/ui_screens/auth/login/login_screen.dart';
 import 'package:pinterest_clone/ui_screens/auth/sign_up/singup_screen.dart';
 import 'package:pinterest_clone/utils/app_colours.dart';
 import 'package:pinterest_clone/utils/app_strings.dart';
@@ -75,7 +76,7 @@ class OnBoardingScreen extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, BottomNavScreen.route);
+                Navigator.pushNamed(context, LoginScreen.route);
               },
               child: const Text(
                 AppText.LOGIN,
